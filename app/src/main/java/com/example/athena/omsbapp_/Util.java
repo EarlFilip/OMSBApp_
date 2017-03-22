@@ -19,6 +19,7 @@ public class Util {
             JSONObject mainObj = new JSONObject(jsonString);
             movie.setTitle(mainObj.getString("Title"));
             movie.setPlot(mainObj.getString("Plot"));
+            movie.setUrlImage(mainObj.getString("Poster"));
 
             return movie;
         }catch (Exception e){

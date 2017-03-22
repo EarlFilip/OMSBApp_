@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
             if(movie != null){
                 textTitle.setText(movie.getTitle());
                 textPlot.setText(movie.getPlot());
-                //imgMovie.setImageBitmap();
+                //imgMovie.setImageBitmap()
             }
         }
     }

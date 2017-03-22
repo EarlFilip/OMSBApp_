@@ -12,14 +12,54 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 public class Util {
+    /**
+     *Lê um arquivo da web via HTTP e converte o mesmo em String.
+     *@param inputStream Stream do arquivo local no aplicativo
+     *@return O arquivo convertido em String.
+     */
+    public static String webToString(InputStream inputStream) {
+        InputStream localStream = inputStream;
+        String localString = "";
+        Writer writer = new StringWriter();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(localStream, "UTF-8"));
+            String line = reader.readLine();
+            while (line != null) {
+                writer.write(line);
+                line = reader.readLine();
+            }
+            localString = writer.toString();
+            writer.close();
+            reader.close();
+            localStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return localString;
+    }
+
+    /**
+     *Read one file JSON and convert to String and insert into class Movie.
+     *@param jsonString String json
+     *@return O arquivo convertido em String.
+     */
     public static Movie JSONtoOmdb(String jsonString){
         try{
             Movie movie = new Movie();
+            String response = null;
 
             JSONObject mainObj = new JSONObject(jsonString);
-            movie.setTitle(mainObj.getString("Title"));
-            movie.setPlot(mainObj.getString("Plot"));
-            movie.setUrlImage(mainObj.getString("Poster"));
+            if(mainObj.getString("Response") != "True"){
+                movie.setTitle("Title not found");
+                movie.setPlot("Plot not found because Movie has not found ");
+                movie.setUrlImage("http://vignette2.wikia.nocookie.net" +
+                        "/mixels/images/f/f4/No-image-found.jpg/revision/latest?cb=20150916222215");
+            }else{
+                movie.setTitle(mainObj.getString("Title"));
+                movie.setPlot(mainObj.getString("Plot"));
+                movie.setUrlImage(mainObj.getString("Poster"));
+            }
 
             return movie;
         }catch (Exception e){

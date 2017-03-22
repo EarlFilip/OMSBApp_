@@ -30,14 +30,6 @@ public class MainActivity extends Activity {
         textPlot = (TextView) findViewById(R.id.textPlot);
     }
 
-    //region Download Sample
-
-    //endregion
-
-    //region Search
-
-    //endregion
-
     public void sample(View v){
 
     }
@@ -45,4 +37,47 @@ public class MainActivity extends Activity {
     public void search(View v){
 
     }
+
+    //region Download Sample
+    private class DownloadFromOpenWeather extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+            HttpURLConnection urlConnection = null;
+            try {
+                URL url = new URL("");
+
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                String result = Util.webToString(urlConnection.getInputStream());
+
+                return result;
+            } catch (Exception e) {
+                Log.e("Error", "Error ", e);
+                return null;
+            } finally{
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Movie movie= Util.JSONtoOmdb(s);
+            if(movie != null){
+                textTitle.setText(movie.getTitle());
+                textPlot.setText(movie.getPlot());
+                //imgMovie.setImageBitmap();
+            }
+        }
+    }
+    //endregion
+
+    //region Search
+
+    //endregion
 }

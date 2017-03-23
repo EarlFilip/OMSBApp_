@@ -1,6 +1,8 @@
 package com.example.athena.omsbapp_;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,8 +10,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MainActivity extends Activity {
@@ -31,21 +36,62 @@ public class MainActivity extends Activity {
     }
 
     public void sample(View v){
-
+        new DownloadFromOMDB().execute();
     }
 
     public void search(View v){
 
     }
 
-    //region Download Sample
-    private class DownloadFromOpenWeather extends AsyncTask<Void, Void, String> {
+    //region Image Download
+    private class DownloadImageAsync extends AsyncTask<URL, Integer,Bitmap>
+    {
+        ProgressDialog progress;
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected void onPreExecute()
+        {
+            progress = ProgressDialog.show(MainActivity.this,
+                    "Downloading image \n",
+                    "pls wait a second!");
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap)
+        {
+            if(bitmap != null)
+            {
+                imgMovie.setImageBitmap(bitmap);
+            }
+            progress.dismiss();
+        }
+
+        @Override
+        protected Bitmap doInBackground(URL... params)
+        {
+            Bitmap myBitmap = null;
+            try{
+                myBitmap = Util.loadImage(params[0]);
+            }catch (IOException e)
+            {
+                Toast.makeText(MainActivity.this,
+                        "Error in download image.",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            return myBitmap;
+        }
+    }
+    //endregion
+
+    //region Download Sample
+    private class DownloadFromOMDB extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
             HttpURLConnection urlConnection = null;
             try {
-                URL url = new URL("");
+                URL url = new URL("http://www.omdbapi.com/?t=South+Park%3A+Bigger%2C+Longer+%26+Uncut");
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -72,6 +118,14 @@ public class MainActivity extends Activity {
                 textTitle.setText(movie.getTitle());
                 textPlot.setText(movie.getPlot());
                 //imgMovie.setImageBitmap()
+                DownloadImageAsync downloadImageAsync= new DownloadImageAsync();
+                URL url = null;
+                try {
+                    url = new URL(movie.getUrlImage());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                downloadImageAsync.execute(url);
             }
         }
     }

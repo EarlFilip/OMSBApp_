@@ -1,17 +1,37 @@
 package com.example.athena.omsbapp_;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URL;
 
 public class Util {
+    /**
+     *Lê um arquivo da web via HTTP e converte o mesmo em String.
+     *@param url
+     *@return a bitmap.
+     */
+    public static Bitmap loadImage(URL url) throws IOException {
+        InputStream inputStream;
+        Bitmap myBitmap;
+
+        inputStream = url.openStream();
+        myBitmap = BitmapFactory.decodeStream(inputStream);
+
+        inputStream.close();
+        return myBitmap;
+    }
+
     /**
      *Lê um arquivo da web via HTTP e converte o mesmo em String.
      *@param inputStream Stream do arquivo local no aplicativo
@@ -47,10 +67,11 @@ public class Util {
     public static Movie JSONtoOmdb(String jsonString){
         try{
             Movie movie = new Movie();
-            String response = null;
+            Boolean response = true;
 
             JSONObject mainObj = new JSONObject(jsonString);
-            if(mainObj.getString("Response") != "True"){
+            response = mainObj.getBoolean("Response");
+            if(response == false){
                 movie.setTitle("Title not found");
                 movie.setPlot("Plot not found because Movie has not found ");
                 movie.setUrlImage("http://vignette2.wikia.nocookie.net" +

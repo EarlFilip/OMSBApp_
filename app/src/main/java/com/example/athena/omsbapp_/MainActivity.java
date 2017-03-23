@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
     EditText editTitle;
     TextView textTitle;
     TextView textPlot;
-    TextView textView3;
+    String search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +36,14 @@ public class MainActivity extends Activity {
     }
 
     public void sample(View v){
+        search = "South+Park%3A+Bigger%2C+Longer+%26+Uncut";
         new DownloadFromOMDB().execute();
     }
 
     public void search(View v){
-
+        search= editTitle.getText().toString();
+        //TODO the changes ' ' to '+'
+        new DownloadFromOMDB().execute();
     }
 
     //region Image Download
@@ -84,14 +87,14 @@ public class MainActivity extends Activity {
     }
     //endregion
 
-    //region Download Sample
+    //region Download
     private class DownloadFromOMDB extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
             HttpURLConnection urlConnection = null;
             try {
-                URL url = new URL("http://www.omdbapi.com/?t=South+Park%3A+Bigger%2C+Longer+%26+Uncut");
+                URL url = new URL("http://www.omdbapi.com/?t="+search);
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");

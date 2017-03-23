@@ -17,9 +17,9 @@ import java.net.URL;
 
 public class Util {
     /**
-     *Lê um arquivo da web via HTTP e converte o mesmo em String.
-     *@param url
-     *@return a bitmap.
+     *Read a URL and turn it to a Bitmap.
+     *@param url gets the url image to do function.
+     *@return Bitmap.
      */
     public static Bitmap loadImage(URL url) throws IOException {
         InputStream inputStream;

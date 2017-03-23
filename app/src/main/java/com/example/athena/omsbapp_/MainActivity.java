@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
 
     public void search(View v){
         search= editTitle.getText().toString();
-        //TODO the changes ' ' to '+'
+        search.replaceAll(" ", "+");
         new DownloadFromOMDB().execute();
     }
 
@@ -136,7 +136,4 @@ public class MainActivity extends Activity {
     }
     //endregion
 
-    //region Search
-
-    //endregion
 }

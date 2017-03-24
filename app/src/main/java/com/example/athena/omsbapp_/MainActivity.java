@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
 
     public void search(View v){
         search= editTitle.getText().toString();
-        search.replaceAll(" ", "+");
+         search = search.replaceAll(" ", "+");
         new DownloadFromOMDB().execute();
     }
 
